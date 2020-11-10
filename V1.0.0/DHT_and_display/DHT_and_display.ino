@@ -40,7 +40,7 @@ void setup() {
 void loop() {
 //  DHT logic
   // Wait a few seconds between measurements.
-  delay(2000);
+  
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float h = dht.readHumidity();
@@ -60,25 +60,23 @@ void loop() {
   // Compute heat index in Celsius (isFahreheit = false)
   float hic = dht.computeHeatIndex(t, h, false);
 
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%  Temperature: "));
-  Serial.print(t);
-  Serial.print(F("°C "));
-  Serial.print(f);
-  Serial.print(F("°F  Heat index: "));
-  Serial.print(hic);
-  Serial.print(F("°C "));
-  Serial.print(hif);
-  Serial.println(F("°F"));
+//  Serial.print(F("Humidity: "));
+//  Serial.print(h);
+//  Serial.print(F("%  Temperature: "));
+//  Serial.print(t);
+//  Serial.print(F("°C "));
+//  Serial.print(f);
+//  Serial.print(F("°F  Heat index: "));
+//  Serial.print(hic);
+//  Serial.print(F("°C "));
+//  Serial.print(hif);
+//  Serial.println(F("°F"));
 
 // LCD logic
   lcd.setCursor(0, 0);
-  lcd.print(F("H: "));
+  lcd.print(F("H:"));
   lcd.print(h);
-  lcd.print(F("%"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("T: "));
+  lcd.print(F("% T:"));
   lcd.print(t);
   lcd.print(F(" C "));
 
@@ -87,21 +85,36 @@ void loop() {
 
   // Read the analog interface
   analogVal = analogRead(analogPin);
-  if(analogVal > 24 && analogVal <35 && b == 1) {
+  if(analogVal > 24 && analogVal <50 && b == 1) {
   value++;
   b = 0;
   } else if(analogVal > 400) {
   b = 1;
   }
+//  Serial.println(analogVal);
 //  Counts the pulses
 //  Serial.println(value); // print analog value
 
 
 //  Count pulses per 10 seconds
 currentMillis = millis();
+float kmh = 0;
+float mps = 0;
 if(currentMillis - startMillis >= 9999) {
-  Serial.println(value);
+  kmh = (value * 0.52424);
+  mps = (kmh / 3.6);
+  Serial.print(mps);
+  Serial.print(F(" meter per seconde"));
+
+  
+  lcd.setCursor(0, 1);
+  lcd.print(mps);
+  lcd.print("m/s");
+  
   startMillis = currentMillis;
   value = 0;
+  kmh = 0;
+  mps = 0;
+
 }
 }
