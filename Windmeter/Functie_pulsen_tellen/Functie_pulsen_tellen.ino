@@ -32,7 +32,7 @@ void loop ()
 
 //  Count pulses per 10 seconds
 currentMillis = millis();
-if(currentMillis - startMillis >= 999) {
+if(currentMillis - startMillis >= 9999) {
   Serial.println(value);
   startMillis = currentMillis;
   value = 0;
