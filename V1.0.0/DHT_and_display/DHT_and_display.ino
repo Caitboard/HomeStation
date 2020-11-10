@@ -1,10 +1,20 @@
-
+//Libraries
 #include "DHT.h"
 #include <LiquidCrystal_I2C.h>
 
+//global variables lcd
 int lcdColumns = 16;
 int lcdRows = 2;
+//global variables anemometer
+  unsigned long startMillis;  
+  unsigned long currentMillis;
+int analogPin = A0; // linear Hall analog interface
+int analogVal;      // analog readings
+int value = 0;
+bool pulse = false;
+int b = 0;
 
+//definitions
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);  
 
 #define DHTPIN 2     // Digital pin connected to the DHT sensor
@@ -21,13 +31,16 @@ void setup() {
   // turn on LCD backlight                      
   lcd.backlight();
   dht.begin();
+
+  //  initializing the anemometer
+   pinMode(analogPin, INPUT);
+   startMillis = millis();
 }
 
 void loop() {
+//  DHT logic
   // Wait a few seconds between measurements.
   delay(2000);
-  
-
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float h = dht.readHumidity();
@@ -59,6 +72,7 @@ void loop() {
   Serial.print(hif);
   Serial.println(F("°F"));
 
+// LCD logic
   lcd.setCursor(0, 0);
   lcd.print(F("H: "));
   lcd.print(h);
@@ -67,4 +81,27 @@ void loop() {
   lcd.print(F("T: "));
   lcd.print(t);
   lcd.print(F(" C "));
+
+//  Anemometer logic
+
+
+  // Read the analog interface
+  analogVal = analogRead(analogPin);
+  if(analogVal > 24 && analogVal <35 && b == 1) {
+  value++;
+  b = 0;
+  } else if(analogVal > 400) {
+  b = 1;
+  }
+//  Counts the pulses
+//  Serial.println(value); // print analog value
+
+
+//  Count pulses per 10 seconds
+currentMillis = millis();
+if(currentMillis - startMillis >= 9999) {
+  Serial.println(value);
+  startMillis = currentMillis;
+  value = 0;
+}
 }
