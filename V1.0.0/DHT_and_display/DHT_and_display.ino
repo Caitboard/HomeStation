@@ -55,23 +55,6 @@ void loop() {
     return;
   }
 
-  // Compute heat index in Fahrenheit (the default)
-  float hif = dht.computeHeatIndex(f, h);
-  // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht.computeHeatIndex(t, h, false);
-
-//  Serial.print(F("Humidity: "));
-//  Serial.print(h);
-//  Serial.print(F("%  Temperature: "));
-//  Serial.print(t);
-//  Serial.print(F("°C "));
-//  Serial.print(f);
-//  Serial.print(F("°F  Heat index: "));
-//  Serial.print(hic);
-//  Serial.print(F("°C "));
-//  Serial.print(hif);
-//  Serial.println(F("°F"));
-
 // LCD logic
   lcd.setCursor(0, 0);
   lcd.print(F("H:"));
@@ -80,19 +63,18 @@ void loop() {
   lcd.print(t);
   lcd.print(F(" C "));
 
-//  Anemometer logic
 
-
-  // Read the analog interface
+  // Read the analog interface for pulse values from Hall Sensor
   analogVal = analogRead(analogPin);
   if(analogVal > 24 && analogVal <50 && b == 1) {
+    //  Counts the pulses where b is a switch, to make sure a pulse is only counted once
   value++;
   b = 0;
   } else if(analogVal > 400) {
   b = 1;
   }
 //  Serial.println(analogVal);
-//  Counts the pulses
+
 //  Serial.println(value); // print analog value
 
 
